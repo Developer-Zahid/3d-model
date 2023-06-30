@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Model Preview</title>
+    <style>
+        *{
+            margin: 0;
+        }
+        body{
+            height: 500vh;
+            background-image: url('https://media.sketchfab.com/models/d238a2d27e324b78af3ab15e2a09faeb/thumbnails/5602a7f507ca4b43880a895ae4e4cfc8/80679508be2a49c7b9a800c10f92bea9.jpeg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        #screen{
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            user-select: none;
+        }
+    </style>
+
+        <!-- 🚨 REQUIRED: Web Components polyfill to support Edge and Firefox < 63 -->
+        <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.1.3/webcomponents-loader.js"></script>
+
+        <!-- 💁 OPTIONAL: Intersection Observer polyfill for better performance in Safari and IE11 -->
+        <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
+    
+        <!-- 💁 OPTIONAL: Resize Observer polyfill improves resize behavior in non-Chrome browsers -->
+        <script src="https://unpkg.com/resize-observer-polyfill@1.5.0/dist/ResizeObserver.js"></script>
+    
+        <!-- 💁 OPTIONAL: Fullscreen polyfill is required for experimental AR features in Canary -->
+        <!--<script src="https://unpkg.com/fullscreen-polyfill@1.0.2/dist/fullscreen.polyfill.js"></script>-->
+    
+        <!-- 💁 OPTIONAL: Include prismatic.js for Magic Leap support -->
+        <script src="https://unpkg.com/@magicleap/prismatic/prismatic.min.js"></script>
+</head>
+<body>
+    <model-viewer autoplay animation-name="stand" id="screen" src="./assets/model/spiderman_rigged.glb"
+        alt="A 3D model of an astronaut"
+        
+    >
+    </model-viewer>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <!-- Import the component -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
+    <!-- Loads <model-viewer> for old browsers like IE11: -->
+    <script nomodule src="https://unpkg.com/@google/model-viewer@v0.3.1/dist/model-viewer-legacy.js"></script>
+    <script>
+        Number.prototype.clamp = function(min, max) {
+            return Math.min(Math.max(this, min), max);
+        };
+    
+        $(function() {
+            var viewer = $("model-viewer")[0];
+            viewer.cameraTarget = "1mm 20mm 10mm";
+            viewer.cameraOrbit = "0deg 90deg 105%";
+            viewer.environmentImage  = "legacy";
+
+            
+            var timer = null;
+            window.addEventListener('scroll', function() {
+                viewer.animationName = 'run'
+                // viewer.animationName = 'swingStart'
+                if(timer !== null) {
+                    clearTimeout(timer);        
+                }
+                timer = setTimeout(function() {
+                    viewer.animationName = 'stand'
+                    // viewer.animationName = 'swingEnd'
+                }, 150);
+            }, false);
+            
+            // function updateRotation() {
+            //     var theta = window.scrollY * 50;
+            //     theta = theta.clamp(-5, 5)
+            //     viewer.cameraOrbit = theta + 'deg 90deg 800m';
+            //     requestAnimationFrame(updateRotation);
+            // }
+            
+            // requestAnimationFrame(updateRotation);
+        });
+    </script>
+</body>
+</html>
